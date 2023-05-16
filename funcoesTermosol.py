@@ -3,6 +3,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import xlrd
+from math import *
 """
 A funcao 'plota' produz um gráfico da estrutura definida pela matriz de nos N 
 e pela incidencia Inc.
@@ -33,6 +34,65 @@ geraSaida(nome,Ft,Ut,Epsi,Fi,Ti)
 -------------------------------------------------------------------------------
 
 """
+class Node:
+    def __init__(self,n, x,y,Cx,Cy) -> None:
+        self.n  = n
+        self.x = x
+        self.y = y
+        self.Cx = Cx
+        self.Cy = Cy
+        pass
+
+class Elemento:
+    def __init__(self,no1,no2,E,A) -> None:
+        self.no1 = no1
+        self.no2 = no2
+        self.E = E
+        self.A = A
+        self.L = sqrt(((no2.x-no1.x)**2+(no2.y-no1.y)**2))
+        self.matriz_rigidez = None
+        pass
+    
+    def setMatrizRigidez(self,matriz_rigidez):
+        self.matriz_rigidez = matriz_rigidez
+        return
+
+def matriz_universal(nm,elementos):
+    K_G = np.zeros((nm*2,nm*2))
+    for elemento in elementos:
+        index1 = min(elemento.no1.n,elemento.no2.n)*2
+        index2 = max(elemento.no1.n,elemento.no2.n)*2
+        lista = [index1-2, index1-1, index2-2,index2-1]
+
+        for i in range(0,4):
+            const = (elemento.E * elemento.A)/ elemento.L
+            for j in range(0,4):
+                K_G[lista[i]][lista[j]] += const*elemento.matriz_rigidez[i][j]
+    return K_G
+def cria_nos(nn,N,F):
+    lista_nos = []
+    for i in range(0,nn):
+        no = Node(i+1,N[0][i],N[1][i],F[2*i][0],F[2*i +1][0])
+        lista_nos.append(no)
+    return lista_nos
+
+def cria_elementos(nm,Inc,lista_nos):
+    lista_elementos = []
+    for i in range(0,nm):
+        no1 = lista_nos[int(Inc[i][0]-1)]
+        no2 =lista_nos[int(Inc[i][1]-1)]
+        elemento = Elemento(no1,no2,Inc[i][2],Inc[i][3])
+        lista_elementos.append(elemento)
+    return lista_elementos
+
+def calcula_matriz_rigidez(elemento):
+    s = (elemento.no2.y-elemento.no1.y)/elemento.L
+    c = (elemento.no2.x-elemento.no1.x)/elemento.L
+    mat = [[c**2,c*s,-c**2,-c*s],
+            [c*s,s**2,-c*s,-s**2],
+            [-c**2,-c*s,c**2,c*s],
+            [-c*s,-s**2,c*s,s**2]]
+    return mat
 def plota(N,Inc):
     # Numero de membros
     nm = len(Inc[:,0])
