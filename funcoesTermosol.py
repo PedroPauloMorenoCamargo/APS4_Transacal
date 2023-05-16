@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import numpy as np
+import xlrd
 """
 A funcao 'plota' produz um gráfico da estrutura definida pela matriz de nos N 
 e pela incidencia Inc.
@@ -32,10 +36,6 @@ geraSaida(nome,Ft,Ut,Epsi,Fi,Ti)
 def plota(N,Inc):
     # Numero de membros
     nm = len(Inc[:,0])
-    
-    import matplotlib as mpl
-    import matplotlib.pyplot as plt
-
 #    plt.show()
     fig = plt.figure()
     # Passa por todos os membros
@@ -55,9 +55,6 @@ def plota(N,Inc):
     plt.show()
     
 def importa(entradaNome):
-    
-    import numpy as np
-    import xlrd
     
     arquivo = xlrd.open_workbook(entradaNome)
     
