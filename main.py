@@ -1,0 +1,2 @@
+from funcoesTermosol import *
+
