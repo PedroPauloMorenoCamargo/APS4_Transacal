@@ -44,7 +44,8 @@ class Node:
         pass
 
 class Elemento:
-    def __init__(self,no1,no2,E,A) -> None:
+    def __init__(self,n,no1,no2,E,A) -> None:
+        self.n = n
         self.no1 = no1
         self.no2 = no2
         self.E = E
@@ -56,7 +57,18 @@ class Elemento:
     def setMatrizRigidez(self,matriz_rigidez):
         self.matriz_rigidez = matriz_rigidez
         return
-
+'''
+def lista_deformacoes(U2,elementos):
+    deformacoes = []
+    array_suporte = np.array([-1,1])
+    print(array_suporte)
+    for i in range(0,len(elementos)):
+        index1 = elementos[i].no1.n*2
+        index2 = elementos[i].no2.n*2
+        U2_aux = [[U2[min(index1,index2)]],[U2[max(index1,index2)-1]]]
+        result = np.dot(array_suporte,U2_aux)  * (1/elementos[i].L)
+        print(result)
+'''
 def matriz_universal(nm,elementos):
     K_G = np.zeros((nm*2,nm*2))
     for elemento in elementos:
@@ -81,7 +93,7 @@ def cria_elementos(nm,Inc,lista_nos):
     for i in range(0,nm):
         no1 = lista_nos[int(Inc[i][0]-1)]
         no2 =lista_nos[int(Inc[i][1]-1)]
-        elemento = Elemento(no1,no2,Inc[i][2],Inc[i][3])
+        elemento = Elemento(i+1,no1,no2,Inc[i][2],Inc[i][3])
         lista_elementos.append(elemento)
     return lista_elementos
 

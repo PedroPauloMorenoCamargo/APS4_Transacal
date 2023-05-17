@@ -10,5 +10,25 @@ for elemento in elementos:
     elemento.setMatrizRigidez(matriz_rigidez)
 #Calcula a matriz de rigidez universal
 K_G = matriz_universal(nm,elementos)
-print(K_G)
+temp = K_G
+#Dropar restricoes
+F = F.flatten()
+cont = 0
+lista_delecao = []
+for restricao in R:
+    F = np.delete(F, int(restricao[0])-cont, 0)
+    K_G = np.delete(K_G, int(restricao[0])-cont, 0)
+    K_G = np.delete(K_G, int(restricao[0])-cont, 1)
+    lista_delecao.append(restricao[0])
+    cont+=1
+
+U = np.linalg.solve(K_G,F)
+print("Deslocamentos: \n",U)
+U2 = U
+for i in lista_delecao:
+    U2 = np.insert(U2,int(i),0)
+
+R = np.dot(temp,U2)
+print("Reacoes de apoio nos nós\n",R)
+
 
