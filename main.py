@@ -9,7 +9,7 @@ for elemento in elementos:
     matriz_rigidez = calcula_matriz_rigidez(elemento)
     elemento.setMatrizRigidez(matriz_rigidez)
 #Calcula a matriz de rigidez universal
-K_G = matriz_universal(nm,elementos)
+K_G = get_matriz_universal(nm,elementos)
 temp = K_G
 #Dropar restricoes
 F = F.flatten()
@@ -31,4 +31,11 @@ for i in lista_delecao:
 R = np.dot(temp,U2)
 print("Reacoes de apoio nos nós\n",R)
 
+deformacoes,tensoes,forcas = get_lista_deformacoes_forcas_tensoes(U2,elementos)
+
+print("Deformações:\n",deformacoes)
+
+print("Tensões:\n",tensoes)
+
+print("Forças Internas:\n",forcas)
 

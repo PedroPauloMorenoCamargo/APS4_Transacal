@@ -57,19 +57,27 @@ class Elemento:
     def setMatrizRigidez(self,matriz_rigidez):
         self.matriz_rigidez = matriz_rigidez
         return
-'''
-def lista_deformacoes(U2,elementos):
+
+def get_lista_deformacoes_forcas_tensoes(U2,elementos):
     deformacoes = []
-    array_suporte = np.array([-1,1])
-    print(array_suporte)
+    tensoes = []
+    forcas = []
+    array_suporte = []
     for i in range(0,len(elementos)):
+        s = (elementos[i].no2.y-elementos[i].no1.y)/elementos[i].L
+        c = (elementos[i].no2.x-elementos[i].no1.x)/elementos[i].L
         index1 = elementos[i].no1.n*2
         index2 = elementos[i].no2.n*2
-        U2_aux = [[U2[min(index1,index2)]],[U2[max(index1,index2)-1]]]
-        result = np.dot(array_suporte,U2_aux)  * (1/elementos[i].L)
-        print(result)
-'''
-def matriz_universal(nm,elementos):
+        U2_aux = [[U2[index1-2]],[U2[index1-1]], [U2[index2-2]],[U2[index2-1]]]
+        array_suporte = [-c,-s,c,s]
+        deformacao = np.dot(array_suporte,U2_aux)  * (1/elementos[i].L)
+        deformacoes.append(deformacao[0])
+        tensoes.append(deformacao[0]*elementos[i].E)
+        forcas.append(deformacao[0]*elementos[i].E*elementos[i].A)
+    
+    return deformacoes,tensoes,forcas
+
+def get_matriz_universal(nm,elementos):
     K_G = np.zeros((nm*2,nm*2))
     for elemento in elementos:
         index1 = min(elemento.no1.n,elemento.no2.n)*2
