@@ -71,7 +71,7 @@ def get_lista_deformacoes_forcas_tensoes(U2,elementos):
     tensoes = []
     forcas = []
     #Array suporte que esta no produto escalar da equação
-    array_suporte = []
+    array_suporte = np.zeros(4)
     for i in range(0,len(elementos)):
         #Seno e cosseno
         s = (elementos[i].no2.y-elementos[i].no1.y)/elementos[i].L
@@ -80,7 +80,7 @@ def get_lista_deformacoes_forcas_tensoes(U2,elementos):
         index1 = elementos[i].no1.n*2
         index2 = elementos[i].no2.n*2
         #Calcula o Vetor [u1,v1,u2,v2]
-        U2_aux = [[U2[index1-2]],[U2[index1-1]], [U2[index2-2]],[U2[index2-1]]]
+        U2_aux = np.array([[U2[index1-2]],[U2[index1-1]], [U2[index2-2]],[U2[index2-1]]])
         #Calcula o array suporte
         array_suporte = [-c,-s,c,s]
         #Calcula a deformação
@@ -110,21 +110,21 @@ def get_matriz_universal(nm,elementos):
                 K_G[lista[i]][lista[j]] += const*elemento.matriz_rigidez[i][j]
     return K_G
 def cria_nos(nn,N,F):
-    lista_nos = []
+    lista_nos = np.zeros(nn,dtype=Node)
     #Cria os nos
     for i in range(0,nn):
         no = Node(i+1,N[0][i],N[1][i],F[2*i][0],F[2*i +1][0])
-        lista_nos.append(no)
+        lista_nos[i] = no
     return lista_nos
 
 def cria_elementos(nm,Inc,lista_nos):
-    lista_elementos = []
+    lista_elementos = np.zeros(nm,dtype=Elemento)
     #Cria os elementos
     for i in range(0,nm):
         no1 = lista_nos[int(Inc[i][0]-1)]
         no2 =lista_nos[int(Inc[i][1]-1)]
         elemento = Elemento(i+1,no1,no2,Inc[i][2],Inc[i][3])
-        lista_elementos.append(elemento)
+        lista_elementos[i] = elemento
     return lista_elementos
 
 def calcula_matriz_rigidez(elemento):
