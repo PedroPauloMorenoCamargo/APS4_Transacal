@@ -67,9 +67,9 @@ class Elemento:
 
 def get_lista_deformacoes_forcas_tensoes(U2,elementos):
     #Listas que serão guardadas
-    deformacoes = []
-    tensoes = []
-    forcas = []
+    deformacoes = np.zeros((len(elementos),1))
+    tensoes = np.zeros((len(elementos),1))
+    forcas = np.zeros((len(elementos),1))
     #Array suporte que esta no produto escalar da equação
     array_suporte = np.zeros(4)
     for i in range(0,len(elementos)):
@@ -85,11 +85,11 @@ def get_lista_deformacoes_forcas_tensoes(U2,elementos):
         array_suporte = [-c,-s,c,s]
         #Calcula a deformação
         deformacao = np.dot(array_suporte,U2_aux)  * (1/elementos[i].L)
-        deformacoes.append(deformacao[0])
+        deformacoes[i] = deformacao[0]
         #Calcula tensao
-        tensoes.append(deformacao[0]*elementos[i].E)
+        tensoes[i] = (deformacao[0]*elementos[i].E)
         #Calcula forca
-        forcas.append(deformacao[0]*elementos[i].E*elementos[i].A)
+        forcas[i] = (deformacao[0]*elementos[i].E*elementos[i].A)
     
     return deformacoes,tensoes,forcas
 
@@ -226,7 +226,7 @@ def importa(entradaNome):
 
 def geraSaida(nome,Ft,Ut,Epsi,Fi,Ti):
     nome = nome + '.txt'
-    f = open("saida.txt","w+")
+    f = open(nome,"w+")
     f.write('Reacoes de apoio [N]\n')
     f.write(str(Ft))
     f.write('\n\nDeslocamentos [m]\n')
