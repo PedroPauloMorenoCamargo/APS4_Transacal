@@ -3,9 +3,10 @@ import numpy as np
 
 def jacobi(a,b,N,tol):     
     n = len(a)  
-    x = np.zeros((len(a),1))     
+    x = np.zeros((len(a),1))
+    print(np.linalg.det(a))     
     for ite in range(0,N):
-        x_antigo = np.copy(x)
+        x_antigo = x.copy()
         for i in range(0,n):
             linha  = a[i]
             x[i] = ((b[i]-np.dot(linha,x_antigo))/linha[i]) + x[i]

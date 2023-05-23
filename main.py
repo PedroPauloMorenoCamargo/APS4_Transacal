@@ -1,6 +1,6 @@
 from funcoesTermosol import *
 from jacobi_gauss import *
-nn,N,nm,Inc,nc,F,nr,R = importa('entrada2.xls')
+nn,N,nm,Inc,nc,F,nr,R = importa('entrada.xls')
 plota(N,Inc)
 #Cria os objetos de estudos
 nos = cria_nos(nn,N,F)
@@ -25,7 +25,6 @@ for restricao in R:
 
 #Fazer algebra linear
 U = jacobi(K_G,F,1000,0.0001)
-print(U)
 U2 = U
 #Colocar o vetor como antigamente para o produto escalar
 for i in lista_delecao:
