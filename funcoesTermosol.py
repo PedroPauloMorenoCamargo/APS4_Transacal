@@ -93,9 +93,9 @@ def get_lista_deformacoes_forcas_tensoes(U2,elementos):
     
     return deformacoes,tensoes,forcas
 
-def get_matriz_universal(nm,elementos):
+def get_matriz_universal(nn,nm,elementos):
     #Cria matriz universal
-    K_G = np.zeros((nm*2,nm*2))
+    K_G = np.zeros((nn*2,nn*2))
     #Loopa por cada elemento
     for elemento in elementos:
         #Pega o maior e menor indexes e põe eles em sua posição relativa
