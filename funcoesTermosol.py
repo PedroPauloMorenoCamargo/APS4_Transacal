@@ -57,6 +57,8 @@ class Elemento:
         self.A = A
         #Comprimento
         self.L = sqrt(((no2.x-no1.x)**2+(no2.y-no1.y)**2))
+        self.sen = (no2.y-no1.y)/self.L
+        self.cos = (no2.x-no1.x)/self.L
         #Matriz de rigidez inicidada como Null
         self.matriz_rigidez = None
         pass
@@ -72,15 +74,19 @@ def get_lista_deformacoes_forcas_tensoes(U2,elementos):
     forcas = np.zeros((len(elementos),1))
     #Array suporte que esta no produto escalar da equação
     array_suporte = np.zeros(4)
+    U2_aux = np.zeros((4,1))
     for i in range(0,len(elementos)):
         #Seno e cosseno
-        s = (elementos[i].no2.y-elementos[i].no1.y)/elementos[i].L
-        c = (elementos[i].no2.x-elementos[i].no1.x)/elementos[i].L
+        s = elementos[i].sen
+        c = elementos[i].cos
         #Pega os index do no1 e no 2 e põe eles na posição relativa
         index1 = elementos[i].no1.n*2
         index2 = elementos[i].no2.n*2
         #Calcula o Vetor [u1,v1,u2,v2]
-        U2_aux = np.array([[U2[index1-2]],[U2[index1-1]], [U2[index2-2]],[U2[index2-1]]])
+        U2_aux[0] = U2[index1-2]
+        U2_aux[1] = U2[index1-1]
+        U2_aux[2] = U2[index2-2]
+        U2_aux[3] = U2[index2-1]
         #Calcula o array suporte
         array_suporte = [-c,-s,c,s]
         #Calcula a deformação
@@ -95,7 +101,7 @@ def get_lista_deformacoes_forcas_tensoes(U2,elementos):
 
 def get_matriz_universal(nn,nm,elementos):
     #Cria matriz universal
-    K_G = np.zeros((nn*2,nn*2))
+    K_G = np.zeros((nn*2,nn*2),dtype=float)
     #Loopa por cada elemento
     for elemento in elementos:
         #Pega o maior e menor indexes e põe eles em sua posição relativa
@@ -107,7 +113,7 @@ def get_matriz_universal(nn,nm,elementos):
         for i in range(0,4):
             for j in range(0,4):
                 #Adiciona na posição certa da matriz universal a matriz de rigidez
-                K_G[lista[i]][lista[j]] += const*elemento.matriz_rigidez[i][j]
+                K_G[lista[i]][lista[j]] += (const*elemento.matriz_rigidez[i][j])
     return K_G
 def cria_nos(nn,N,F):
     lista_nos = np.zeros(nn,dtype=Node)
@@ -129,9 +135,9 @@ def cria_elementos(nm,Inc,lista_nos):
 
 def calcula_matriz_rigidez(elemento):
     #Calcula seno
-    s = (elemento.no2.y-elemento.no1.y)/elemento.L
+    s = elemento.sen
     #Calcula cosseno
-    c = (elemento.no2.x-elemento.no1.x)/elemento.L
+    c = elemento.cos
     #Calcula matriz rigida
     mat = [[c**2,c*s,-c**2,-c*s],
             [c*s,s**2,-c*s,-s**2],
